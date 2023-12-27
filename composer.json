@@ -1,0 +1,21 @@
+{
+    "name": "doubler/open-api-sdk",
+    "description": "open-api-sdk",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Doubler\\OpenApiSdk\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "zsc",
+            "email": "985342160@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.1",
+        "guzzlehttp/guzzle": "^7.8"
+    }
+}
