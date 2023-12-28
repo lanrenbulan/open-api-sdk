@@ -83,7 +83,7 @@ trait RequestBuilderTrait
     /**
      * @return string|StreamInterface|null
      */
-    public function getBody(): string|StreamInterface|null
+    protected function getBody(): string|StreamInterface|null
     {
         if ($this->formParams) {
             if (!isset($this->headers['Content-Type'])) {
