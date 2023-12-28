@@ -7,35 +7,70 @@
  * Redistributions of files must retain the above copyright notice.
  */
 
+declare(strict_types=1);
+
 namespace Doubler\OpenApiSdk;
 
+use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 trait RequestBuilderTrait
 {
+    /**
+     * @var string
+     */
     protected string $method = 'GET';
 
+    /**
+     * @var array
+     */
     protected array $queryParams = [];
 
+    /**
+     * @var array
+     */
+    protected array $pathParams = [];
+
+    /**
+     * @var array
+     */
+    protected array $formParams = [];
+
+    /**
+     * @var array
+     */
     protected array $bodyParams = [];
 
+    /**
+     * @var array
+     */
+    protected array $multipart = [];
+
+    /**
+     * @var array
+     */
     protected array $headers = [];
 
-    public function build(): Request
+    public function getRequest(): RequestInterface
     {
-        $this->beforeBuild();;
+        $this->beforeBuildRequest();;
 
         return new Request($this->method, $this->getUri(), $this->headers, $this->getBody());
     }
 
-    protected function beforeBuild()
+    /**
+     * @return void
+     */
+    protected function beforeBuildRequest(): void
     {
 
     }
 
     protected function getUri(): string
     {
-        $queryStr = $this->getQueryStr();
+        $queryStr = $this->encodeParams($this->queryParams);
 
         return sprintf(
             '%s%s%s',
@@ -46,61 +81,49 @@ trait RequestBuilderTrait
     }
 
     /**
-     * @return string
+     * @return string|StreamInterface|null
      */
-    public function getBody(): string
+    public function getBody(): string|StreamInterface|null
     {
-        return '';
-    }
+        if ($this->formParams) {
+            if (!isset($this->headers['Content-Type'])) {
+                $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            }
 
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function withHeader($name, $value): static
-    {
-        $this->headers[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function addQueryParam($name, $value): static
-    {
-        $this->queryParams[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    public function addBodyParam($name, $value): static
-    {
-        $this->bodyParams[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getQueryStr(): string
-    {
-        $segments = [];
-
-        foreach ($this->queryParams as $name => $value) {
-            $segments[] = sprintf('%s=%s', $name, rawurlencode($value));
+            return $this->encodeParams($this->formParams);
         }
 
-        return join('&', $segments);
+        if (!$this->multipart) {
+            return new MultipartStream($this->multipart);
+        }
+
+        if ('application/json' === $this->headers['Content-Type']) {
+            return $this->jsonEncode($this->bodyParams);
+        }
+
+        if (!isset($this->headers['Content-Type'])) {
+            $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        }
+
+        return $this->encodeParams($this->bodyParams);
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     */
+    protected function jsonEncode(array $data): string
+    {
+        return json_encode($this->bodyParams, JSON_UNESCAPED_UNICODE & JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * @param array $params
+     * @return string
+     */
+    protected function encodeParams(array $params): string
+    {
+        return http_build_query($params, '', '&');
     }
 
     abstract protected function getGatewayUri();

@@ -13,8 +13,8 @@ namespace Doubler\OpenApiSdk;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Promise;
-use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -37,11 +37,11 @@ class Client
     /**
      * 发送请求
      *
-     * @param Request $request
+     * @param RequestInterface $request
      * @return ResponseInterface
      * @throws ApiException
      */
-    public function send(Request $request): ResponseInterface
+    public function send(RequestInterface $request): ResponseInterface
     {
         try {
             return $this->http->sendRequest($request);
@@ -53,7 +53,7 @@ class Client
     /**
      * 批量发送多个请求
      *
-     * @param Request[] $requests
+     * @param RequestInterface[] $requests
      * @return ResponseInterface[]
      * @throws ApiException
      */
