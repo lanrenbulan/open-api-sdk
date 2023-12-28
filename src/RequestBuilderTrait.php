@@ -114,7 +114,7 @@ trait RequestBuilderTrait
      */
     protected function jsonEncode(array $data): string
     {
-        return json_encode($this->bodyParams, JSON_UNESCAPED_UNICODE & JSON_UNESCAPED_SLASHES);
+        return json_encode($this->bodyParams, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
