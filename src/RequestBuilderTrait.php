@@ -91,10 +91,10 @@ trait RequestBuilderTrait
             }
 
             return $this->encodeParams($this->formParams);
-        }
-
-        if ($this->multipart) {
+        } else if ($this->multipart) {
             return new MultipartStream($this->multipart);
+        } else if (!$this->bodyParams) {
+            return null;
         }
 
         if ('application/json' === $this->headers['Content-Type']) {
@@ -103,10 +103,6 @@ trait RequestBuilderTrait
 
         if (!isset($this->headers['Content-Type'])) {
             $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
-
-        if (!$this->bodyParams) {
-            return null;
         }
 
         return $this->encodeParams($this->bodyParams);
