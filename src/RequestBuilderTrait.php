@@ -105,6 +105,10 @@ trait RequestBuilderTrait
             $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
+        if (!$this->bodyParams) {
+            return null;
+        }
+
         return $this->encodeParams($this->bodyParams);
     }
 
