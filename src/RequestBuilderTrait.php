@@ -93,7 +93,7 @@ trait RequestBuilderTrait
             return $this->encodeParams($this->formParams);
         }
 
-        if (!$this->multipart) {
+        if ($this->multipart) {
             return new MultipartStream($this->multipart);
         }
 
