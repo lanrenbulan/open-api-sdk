@@ -70,7 +70,7 @@ trait RequestBuilderTrait
 
     protected function getUri(): string
     {
-        $queryStr = $this->encodeParams($this->queryParams);
+        $queryStr = $this->getQueryStr();
 
         return sprintf(
             '%s%s%s',
@@ -78,6 +78,11 @@ trait RequestBuilderTrait
             $this->getApiPath(),
             $queryStr ? '?' . $queryStr : ''
         );
+    }
+
+    protected function getQueryStr(): string
+    {
+        return $this->encodeParams($this->queryParams);
     }
 
     /**
