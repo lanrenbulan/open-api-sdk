@@ -1,11 +1,4 @@
 <?php
-/**
- * This file is part of doubler.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- */
 
 declare(strict_types=1);
 
@@ -27,11 +20,6 @@ trait RequestBuilderTrait
      * @var array
      */
     protected array $queryParams = [];
-
-    /**
-     * @var array
-     */
-    protected array $pathParams = [];
 
     /**
      * @var array
@@ -65,9 +53,11 @@ trait RequestBuilderTrait
      */
     protected function beforeBuildRequest(): void
     {
-
     }
 
+    /**
+     * @return string
+     */
     protected function getUri(): string
     {
         $queryStr = $this->getQueryStr();
@@ -80,6 +70,9 @@ trait RequestBuilderTrait
         );
     }
 
+    /**
+     * @return string
+     */
     protected function getQueryStr(): string
     {
         return $this->encodeParams($this->queryParams);
@@ -119,7 +112,7 @@ trait RequestBuilderTrait
      */
     protected function jsonEncode(array $data): string
     {
-        return json_encode($this->bodyParams, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     /**
@@ -131,7 +124,13 @@ trait RequestBuilderTrait
         return http_build_query($params, '', '&');
     }
 
-    abstract protected function getGatewayUri();
+    /**
+     * @return string
+     */
+    abstract protected function getGatewayUri(): string;
 
-    abstract protected function getApiPath();
+    /**
+     * @return string
+     */
+    abstract protected function getApiPath(): string;
 }

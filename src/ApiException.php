@@ -1,17 +1,51 @@
 <?php
-/**
- * This file is part of doubler.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- */
 
 declare(strict_types=1);
 
 namespace Doubler\OpenApiSdk;
 
-class ApiException extends \Exception
-{
+use Exception;
+use Psr\Http\Message\RequestInterface;
 
+class ApiException extends Exception
+{
+    /**
+     * @var RequestInterface[]
+     */
+    private array $requests;
+
+    public function getRequest(): RequestInterface
+    {
+        return $this->requests[0];
+    }
+
+    /**
+     * @return RequestInterface[]
+     */
+    public function getRequests(): array
+    {
+        return $this->requests;
+    }
+
+    /**
+     * @param RequestInterface[] $requests
+     * @return $this
+     */
+    public function setRequests(array $requests): static
+    {
+        $this->requests = $requests;
+
+        return $this;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return $this
+     */
+    public function setRequest(RequestInterface $request): static
+    {
+        $this->requests[] = $request;
+
+        return $this;
+    }
 }

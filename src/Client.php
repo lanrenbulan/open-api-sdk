@@ -1,11 +1,4 @@
 <?php
-/**
- * This file is part of doubler.
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the MIT-LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- */
 
 declare(strict_types=1);
 
@@ -25,17 +18,17 @@ class Client
      */
     private HttpClient $http;
 
-    public function __construct(array $httpConfig = [])
+    public function __construct(array $config = [])
     {
-        $httpConfig = array_merge([
+        $config = array_merge([
             'http_errors' => false,
-        ], $httpConfig);
+        ], $config);
 
-        $this->http = new HttpClient($httpConfig);
+        $this->http = new HttpClient($config);
     }
 
     /**
-     * 发送请求
+     * Send request
      *
      * @param RequestInterface $request
      * @return ResponseInterface
@@ -46,7 +39,9 @@ class Client
         try {
             return $this->http->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
-            throw new ApiException($e->getMessage(), $e->getCode(), $e);
+            $exception = new ApiException($e->getMessage(), $e->getCode(), $e);
+            $exception->setRequests([$request]);
+            throw $exception;
         }
     }
 
@@ -67,7 +62,9 @@ class Client
 
             return Promise\Utils::unwrap($promises);
         } catch (Throwable $e) {
-            throw new ApiException($e->getMessage(), $e->getCode(), $e);
+            $exception = new ApiException($e->getMessage(), $e->getCode(), $e);
+            $exception->setRequests($requests);
+            throw $exception;
         }
     }
 }
