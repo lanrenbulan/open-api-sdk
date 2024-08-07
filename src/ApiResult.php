@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Doubler\OpenApiSdk;
 
-use Doubler\OpenApiSdk\Encoder\EncoderInterface;
-use Doubler\OpenApiSdk\Encoder\Factory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -13,11 +11,11 @@ class ApiResult
 {
     private bool $success = true;
 
-    private ?RequestInterface $request;
+    private RequestInterface $request;
 
     private ?ResponseInterface $response;
 
-    private ?EncoderInterface $encoder;
+    private ?array $data = null;
 
     private string $message = '';
 
@@ -102,33 +100,16 @@ class ApiResult
      */
     public function getData(): ?array
     {
-        if (null === $this->response) {
-            return null;
-        }
-
-        $content = (string)$this->getResponse()->getBody();
-
-        return $this->getEncoder()->decode($content);
-    }
-
-    public function getEncoder(): EncoderInterface
-    {
-        if (null === $this->encoder) {
-            $contentType = $this->getResponse()->getHeader('content-type')[0] ?? 'application/json';
-
-            $this->encoder = Factory::make($contentType);
-        }
-
-        return $this->encoder;
+        return $this->data;
     }
 
     /**
-     * @param EncoderInterface $encoder
+     * @param array $data
      * @return $this
      */
-    public function setEncoder(EncoderInterface $encoder): static
+    public function setData(array $data): static
     {
-        $this->encoder = $encoder;
+        $this->data = $data;
 
         return $this;
     }
