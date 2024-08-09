@@ -2,7 +2,7 @@
 
 namespace Doubler\OpenApiSdk\Encoder;
 
-abstract class AbstractEncoder
+abstract class AbstractEncoder implements EncoderInterface
 {
     protected array $defaultContext = [];
 
