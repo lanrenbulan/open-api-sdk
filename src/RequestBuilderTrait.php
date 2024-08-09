@@ -24,22 +24,34 @@ trait RequestBuilderTrait
     /**
      * @var array
      */
-    protected array $formParams = [];
-
-    /**
-     * @var array
-     */
     protected array $bodyParams = [];
 
     /**
      * @var array
      */
-    protected array $multipart = [];
+    protected array $headers = [];
 
     /**
-     * @var array
+     * @param array $params
+     * @return $this
      */
-    protected array $headers = [];
+    public function setQueryParams(array $params): static
+    {
+        $this->queryParams = $params;
+
+        return $this;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     */
+    public function setBodyParams(array $params): static
+    {
+        $this->bodyParams = $params;
+
+        return $this;
+    }
 
     public function getRequest(): RequestInterface
     {
@@ -83,24 +95,14 @@ trait RequestBuilderTrait
      */
     protected function getBody(): string|StreamInterface|null
     {
-        if ($this->formParams) {
-            if (!isset($this->headers['Content-Type'])) {
-                $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
-            }
+        $contentType = $this->headers['Content-Type'] ?? null;
 
-            return $this->encodeParams($this->formParams);
-        } else if ($this->multipart) {
-            return new MultipartStream($this->multipart);
+        if ($contentType === 'multipart/form-data') {
+            return new MultipartStream($this->bodyParams);
+        } else if ($contentType === 'application/json') {
+            return $this->jsonEncode($this->bodyParams);
         } else if (!$this->bodyParams) {
             return null;
-        }
-
-        if ('application/json' === $this->headers['Content-Type']) {
-            return $this->jsonEncode($this->bodyParams);
-        }
-
-        if (!isset($this->headers['Content-Type'])) {
-            $this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
         return $this->encodeParams($this->bodyParams);
