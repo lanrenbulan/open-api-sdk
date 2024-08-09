@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Doubler\OpenApiSdk\Encoder;
 
 class Factory
 {
     private static array $map = [
-        'application/json' => JsonEncoder::class,
-        'application/xml' => XmlEncoder::class,
         'json' => JsonEncoder::class,
         'xml' => XmlEncoder::class,
     ];
@@ -14,9 +14,28 @@ class Factory
     public static function make(string $key): EncoderInterface
     {
         if (!isset(self::$map[$key])) {
-            throw new \InvalidArgumentException('Invalid key.');
+            throw new \InvalidArgumentException('Unsupported ' . $key);
         }
 
         return new self::$map[$key];
+    }
+
+    /**
+     * @param string $contentType
+     * @return EncoderInterface
+     */
+    public static function makeFromContentType(string $contentType): EncoderInterface
+    {
+        $key = '';
+
+        if (stripos('xml', $contentType) !== false) {
+            $key = 'xml';
+        } else if (stripos('json', $contentType) !== false) {
+            $key = 'json';
+        } else {
+            throw new \InvalidArgumentException('Unsupported: ' . $contentType);
+        }
+
+        return static::make($key);
     }
 }

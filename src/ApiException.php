@@ -48,4 +48,14 @@ class ApiException extends Exception
 
         return $this;
     }
+
+    public function toResult(): ApiResult
+    {
+        $result = new ApiResult();
+        $result->setSuccess(false);
+        $result->setMessage($this->getMessage());
+        $result->setRequest($this->getRequest());
+
+        return $result;
+    }
 }
