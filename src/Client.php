@@ -22,6 +22,8 @@ class Client
     {
         $config = array_merge([
             'http_errors' => false,
+            'connect_timeout' => 30,
+            'timeout' => 180,
         ], $config);
 
         $this->http = new HttpClient($config);
@@ -38,7 +40,7 @@ class Client
     {
         try {
             return $this->http->sendRequest($request);
-        } catch (ClientExceptionInterface $e) {
+        } catch (Throwable $e) {
             $exception = new ApiException($e->getMessage(), $e->getCode(), $e);
             $exception->setRequests([$request]);
             throw $exception;

@@ -2,7 +2,6 @@
 
 namespace Doubler\OpenApiSdk\Encoder;
 
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\XmlEncoder as SymfonyXmlEncoder;
 
 class XmlEncoder extends AbstractEncoder
