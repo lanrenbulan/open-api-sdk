@@ -6,6 +6,7 @@ namespace Doubler\OpenApiSdk;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class ApiResult
 {
@@ -18,6 +19,8 @@ class ApiResult
     private ?array $data = null;
 
     private string $message = '';
+
+    private ?Throwable $exception = null;
 
     /**
      * @return bool
@@ -110,6 +113,25 @@ class ApiResult
     public function setData(array $data): static
     {
         $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getException(): ?Throwable
+    {
+        return $this->exception;
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return $this
+     */
+    public function setException(Throwable $exception): static
+    {
+        $this->exception = $exception;
 
         return $this;
     }
