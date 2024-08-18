@@ -22,6 +22,39 @@ class ApiResult
 
     private ?Throwable $exception = null;
 
+    public static function success(array $data = [], string $message = 'ok'): static
+    {
+        $result = new static();
+
+        $result->setSuccess(true)
+            ->setData($data)
+            ->setMessage($message)
+        ;
+
+        return $result;
+    }
+
+    public static function fail(string $message, ?array $data = null): static
+    {
+        $result = new static();
+
+        $result->setSuccess(false)
+            ->setData($data)
+            ->setMessage($message)
+        ;
+
+        return $result;
+    }
+
+    public static function fromException(Throwable $e): static
+    {
+        $result = static::fail($e->getMessage());
+
+        $result->setException($e);
+
+        return $result;
+    }
+
     /**
      * @return bool
      */
