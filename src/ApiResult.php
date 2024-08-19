@@ -39,9 +39,11 @@ class ApiResult
         $result = new static();
 
         $result->setSuccess(false)
-            ->setData($data)
-            ->setMessage($message)
-        ;
+            ->setMessage($message);
+
+        if (null !== $data) {
+            $result->setData($data);
+        }
 
         return $result;
     }

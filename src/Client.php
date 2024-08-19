@@ -6,7 +6,6 @@ namespace Doubler\OpenApiSdk;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Promise;
-use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
