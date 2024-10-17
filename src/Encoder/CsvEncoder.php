@@ -20,16 +20,12 @@ class CsvEncoder extends AbstractEncoder
     {
         $context = array_merge($this->defaultContext, $context);
 
+        $file = $this->writeTempFile($content);
+
         $options = new Options();
         $options->FIELD_DELIMITER = $context['delimiter'];
-
-        $stream = fopen('php://temp', 'r+');
-        fwrite($stream, $content);
-        rewind($stream);
-
         $reader = new Reader($options);
-
-        $reader->open($stream);
+        $reader->open($file);
 
         $rows = [];
 
@@ -40,8 +36,21 @@ class CsvEncoder extends AbstractEncoder
         }
 
         $reader->close();
-        fclose($stream);
+        unlink($file);
 
         return $rows;
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    private function writeTempFile(string $content): string
+    {
+        $file = tempnam(sys_get_temp_dir(), 'csv_');
+
+        file_put_contents($file, $content);
+
+        return $file;
     }
 }
