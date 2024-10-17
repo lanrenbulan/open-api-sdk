@@ -27,11 +27,11 @@ class Factory
      */
     public static function makeFromContentType(string $contentType): EncoderInterface
     {
-        if (stripos('xml', $contentType) !== false) {
+        if (stripos($contentType, 'xml') !== false) {
             $key = 'xml';
-        } else if (stripos('json', $contentType) !== false) {
+        } else if (stripos($contentType, 'json') !== false) {
             $key = 'json';
-        } else if (stripos('csv', $contentType) !== false) {
+        } else if (stripos($contentType, 'csv') !== false) {
             $key = 'csv';
         } else {
             throw new \InvalidArgumentException('Unsupported: ' . $contentType);
