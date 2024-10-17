@@ -9,6 +9,7 @@ class Factory
     private static array $map = [
         'json' => JsonEncoder::class,
         'xml' => XmlEncoder::class,
+        'csv' => CsvEncoder::class,
     ];
 
     public static function make(string $key): EncoderInterface
@@ -26,12 +27,12 @@ class Factory
      */
     public static function makeFromContentType(string $contentType): EncoderInterface
     {
-        $key = '';
-
         if (stripos('xml', $contentType) !== false) {
             $key = 'xml';
         } else if (stripos('json', $contentType) !== false) {
             $key = 'json';
+        } else if (stripos('csv', $contentType) !== false) {
+            $key = 'csv';
         } else {
             throw new \InvalidArgumentException('Unsupported: ' . $contentType);
         }

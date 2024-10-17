@@ -17,6 +17,7 @@
     "require": {
         "php": ">=8.1",
         "guzzlehttp/guzzle": "^7.8",
-        "symfony/serializer": "^7.1"
+        "symfony/serializer": "^7.1",
+        "openspout/openspout": "^4.26"
     }
 }

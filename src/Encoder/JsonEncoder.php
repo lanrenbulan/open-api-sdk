@@ -2,7 +2,6 @@
 
 namespace Doubler\OpenApiSdk\Encoder;
 
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder as SymfonyJsonEncoder;
 
 class JsonEncoder extends AbstractEncoder
