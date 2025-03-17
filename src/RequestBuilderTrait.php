@@ -87,7 +87,7 @@ trait RequestBuilderTrait
      */
     protected function getQueryStr(): string
     {
-        return $this->encodeParams($this->queryParams);
+        return http_build_query($params, '', '&', PHP_QUERY_RFC3986);
     }
 
     /**
@@ -105,7 +105,7 @@ trait RequestBuilderTrait
             return null;
         }
 
-        return $this->encodeParams($this->bodyParams);
+        return http_build_query($params, '', '&');
     }
 
     /**
@@ -115,15 +115,6 @@ trait RequestBuilderTrait
     protected function jsonEncode(array $data): string
     {
         return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    }
-
-    /**
-     * @param array $params
-     * @return string
-     */
-    protected function encodeParams(array $params): string
-    {
-        return http_build_query($params, '', '&');
     }
 
     /**
